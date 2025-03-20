@@ -39,4 +39,19 @@ public class ProductController {
                     .body("Ocurrio un error inesperado");
         }
     }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO productRequestDTO){
+        try{
+            ProductResponseDTO responseDTO = productService.updateProduct(productRequestDTO, id);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(responseDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocurrio un error inesperado");
+        }
+    }
 }

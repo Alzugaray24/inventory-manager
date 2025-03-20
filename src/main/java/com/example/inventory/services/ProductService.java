@@ -26,12 +26,7 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
-//    private ProductMapper mapper;
-
-
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO){
-
-//        ProductMapper mapper = new ProductMapper();
 
         Category category = categoryRepository.findById(productRequestDTO.getCategoryId())
                 .orElseThrow(()-> new EntityNotFoundException("La categoria no existe"));
@@ -48,5 +43,23 @@ public class ProductService {
                 .orElseThrow(()-> new EntityNotFoundException("El producto no existe"));
 
         productRepository.delete(productToDelete);
+    }
+
+
+    public ProductResponseDTO updateProduct(ProductRequestDTO productRequestDTO, Long id){
+
+        Category category = categoryRepository.findById(productRequestDTO.getCategoryId())
+                .orElseThrow(()-> new EntityNotFoundException("La categoria no existe"));
+
+        Product productToUpdate = productRepository.findById(id)
+                .map(product -> {
+                    product.setName(productRequestDTO.getName());
+                    product.setPrice(productRequestDTO.getPrice());
+                    product.setDescription(productRequestDTO.getDescription());
+                    product.setCategory(category);
+                    return productRepository.saveAndFlush(product);
+                }).orElseThrow(()-> new EntityNotFoundException("El producto no existe"));
+
+        return mapper.toResponse(productToUpdate);
     }
 }

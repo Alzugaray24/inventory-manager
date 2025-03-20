@@ -5,6 +5,7 @@ import com.example.inventory.dtos.CategoryResponseDTO;
 import com.example.inventory.models.Category;
 import com.example.inventory.repositories.CategoryRepository;
 import com.example.inventory.utils.CategoryMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +26,13 @@ public class CategoryService {
         Category newCategory = mapper.toEntity(categoryRequestDTO);
         categoryRepository.saveAndFlush(newCategory);
         return mapper.toResponse(newCategory);
+    }
+
+
+    public void deleteCategory(Long id){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("La categoria no existe"));
+
+        categoryRepository.delete(category);
     }
 }
