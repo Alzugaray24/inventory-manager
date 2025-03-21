@@ -11,6 +11,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductService {
 
@@ -61,5 +65,27 @@ public class ProductService {
                 }).orElseThrow(()-> new EntityNotFoundException("El producto no existe"));
 
         return mapper.toResponse(productToUpdate);
+    }
+
+    public List<ProductResponseDTO> getProducts() {
+
+        List<Product> products = productRepository.findAll();
+
+        return products.stream().map(p -> new ProductResponseDTO(
+                p.getId(),
+                p.getName(),
+                p.getDescription(),
+                p.getPrice(),
+                p.getCreatedAt(),
+                p.getCategory().getName()
+        )).collect(Collectors.toList());
+    }
+
+
+    public ProductResponseDTO getProductById(Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("El producto no existe"));
+
+        return mapper.toResponse(product);
     }
 }

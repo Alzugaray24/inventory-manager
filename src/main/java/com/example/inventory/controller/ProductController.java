@@ -3,13 +3,13 @@ package com.example.inventory.controller;
 import com.example.inventory.dtos.ProductRequestDTO;
 import com.example.inventory.dtos.ProductResponseDTO;
 import com.example.inventory.services.ProductService;
-import com.example.inventory.utils.ProductMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,6 +52,29 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ocurrio un error inesperado");
+        }
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponseDTO>> getProducts(){
+        List<ProductResponseDTO> productsResponse = productService.getProducts();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productsResponse);
+    }
+
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id){
+        try {
+            ProductResponseDTO responseDTO = productService.getProductById(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(responseDTO);
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocurrio un problema en el servidor");
         }
     }
 }
