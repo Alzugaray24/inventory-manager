@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,5 +88,45 @@ public class ProductService {
                 .orElseThrow(()-> new EntityNotFoundException("El producto no existe"));
 
         return mapper.toResponse(product);
+    }
+
+    public List<ProductResponseDTO> getProductsByName(String name) {
+
+        List<Product> products = productRepository.findByNameStartingWith(name);
+
+        return products.stream()
+                .map(product -> new ProductResponseDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getCreatedAt(),
+                        product.getCategory().getName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponseDTO> productsByCategory(String categoryName){
+
+        return productRepository.findByCategory(categoryName).stream()
+                .map(product -> new ProductResponseDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getCreatedAt(),
+                        product.getCategory().getName()
+                )).toList();
+    }
+
+    public List<ProductResponseDTO> productsByPrice(){
+        return productRepository.findByPrice().stream()
+                .map(product -> new ProductResponseDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getCreatedAt(),
+                        product.getCategory().getName()
+                )).toList();
     }
 }

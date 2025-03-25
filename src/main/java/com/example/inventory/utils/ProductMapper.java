@@ -6,9 +6,6 @@ import com.example.inventory.models.Category;
 import com.example.inventory.models.Product;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class ProductMapper {
     public Product toEntity(ProductRequestDTO productRequestDTO, Category category){

@@ -29,5 +29,9 @@ public class ProductResponseDTO {
     public ProductResponseDTO(){}
 
 
-
+    public ProductResponseDTO(String name, String description, Double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 }

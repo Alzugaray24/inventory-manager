@@ -2,13 +2,15 @@ package com.example.inventory.controller;
 
 import com.example.inventory.dtos.CategoryRequestDTO;
 import com.example.inventory.dtos.CategoryResponseDTO;
-import com.example.inventory.models.Category;
+import com.example.inventory.dtos.ProductResponseDTO;
 import com.example.inventory.services.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CategoryController {
@@ -37,6 +39,34 @@ public class CategoryController {
         }
     }
 
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<?> updateCategory(@RequestBody CategoryRequestDTO requestDTO, @PathVariable Long id){
+        try {
+            CategoryResponseDTO responseDTO = categoryService.updateCategory(requestDTO, id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(responseDTO);
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryResponseDTO>> getCategories(){
+        List<CategoryResponseDTO> responseDTOS = categoryService.getCategories();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responseDTOS);
+    }
 
 
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsFromCategory(@PathVariable Long id){
+        try {
+            List<ProductResponseDTO> responseDTOS = categoryService.getProductsFromCategory(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(responseDTOS);
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

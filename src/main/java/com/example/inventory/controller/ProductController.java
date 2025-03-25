@@ -77,4 +77,27 @@ public class ProductController {
                     .body("Ocurrio un problema en el servidor");
         }
     }
+
+    @GetMapping("/products/name/{word}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByName(@PathVariable String word){
+        List<ProductResponseDTO> productResponseDTOList = productService.getProductsByName(word);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productResponseDTOList);
+    }
+
+    @GetMapping("/products/category/{categoryName}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable String categoryName){
+        List<ProductResponseDTO> productResponseDTOList = productService.productsByCategory(categoryName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productResponseDTOList);
+    }
+
+
+    @GetMapping("/products/price")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByPrice(){
+        List<ProductResponseDTO> productResponseDTOList = productService.productsByPrice();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productResponseDTOList);
+    }
 }
